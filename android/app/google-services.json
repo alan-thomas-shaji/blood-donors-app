@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "336239770792",
+    "firebase_url": "https://bloodapp-37f46.firebaseio.com",
+    "project_id": "bloodapp-37f46",
+    "storage_bucket": "bloodapp-37f46.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336239770792:android:cc07b4334e51ea5e49d69d",
+        "android_client_info": {
+          "package_name": "com.tomercon.revive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "336239770792-gqcvauv285aq64rb5hib5tjv61bgk9ri.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQbiULVcpJpx1kqQpfhRHfM24zYROSTtg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "336239770792-gqcvauv285aq64rb5hib5tjv61bgk9ri.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
