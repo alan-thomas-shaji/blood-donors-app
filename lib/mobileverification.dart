@@ -28,7 +28,7 @@ class MobileVerficationState extends State<MobileVerfication> {
     };
 
     final PhoneVerificationFailed verificationfailed =
-        (AuthException authException) {
+        (FirebaseAuthException authException) {
       print('${authException.message}');
       setState(() {
         otpverified = false;
@@ -169,7 +169,9 @@ class MobileVerficationState extends State<MobileVerfication> {
                                 ? 'Enter a valid number'
                                 : null,
                         controller: mobilecontroller,
-                        inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+                        inputFormatters: [
+                          WhitelistingTextInputFormatter.digitsOnly
+                        ],
                         keyboardType: TextInputType.phone,
                         style: TextStyle(fontSize: 20),
                         decoration: InputDecoration(

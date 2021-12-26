@@ -24,7 +24,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   http.Response res;
   bool _isHidden = true;
-  bool logged=false;
+  bool logged = false;
 
   void _toggleVisibility() {
     setState(() {
@@ -41,11 +41,14 @@ class _LoginPageState extends State<LoginPage> {
         theme: ut.maintheme(),
         home: Scaffold(
             body: ModalProgressHUD(
-              progressIndicator: SpinKitHourGlass(color:Colors.red,size:80,),
-              inAsyncCall: logged,
-                          child: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
+          progressIndicator: SpinKitHourGlass(
+            color: Colors.red,
+            size: 80,
+          ),
+          inAsyncCall: logged,
+          child: SingleChildScrollView(
+            child: Container(
+              height: MediaQuery.of(context).size.height,
               padding: EdgeInsets.only(
                   top: 100.0, right: 20.0, left: 20.0, bottom: 20.0),
               decoration: ut.bg(),
@@ -78,9 +81,14 @@ class _LoginPageState extends State<LoginPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
-                       GestureDetector(onTap: ()=>Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => Passwordresetverify(type: "users",))),
-                                                child: Text(
+                        GestureDetector(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Passwordresetverify(
+                                        type: "users",
+                                      ))),
+                          child: Text(
                             "Forgotten Password?",
                             style: TextStyle(
                               color: Theme.of(context).primaryColor,
@@ -90,98 +98,126 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                   ),
-                 
                   SizedBox(height: 50.0),
-                 InkWell(
-      onTap: () async {
-        setState(() {
-          logged=true;
-        });
-        var bd = json.encode({"uname": em.text, "pass":ut.encrypt(pass.text)});
-        res = await http.post(g.baseUrl+"/UserLogin.php", body: bd);
-        print(res.statusCode);
-        print(res.body);
-        setState(() {
-          logged=false;
-        });
-        if (res.body != "Invalid Username/Password") {
-          var r = json.decode(res.body);
-          print(r['name']);
-          String capname = r['name'];
-          final SharedPreferences sp = await SharedPreferences.getInstance();
-         sp.setString("name", r['name']);
-          sp.setString("username", r['username']);
-          sp.setString("password", r['pass']);
-          sp.setString("gender", r['gender']);
-          sp.setString("district", r['district']);
-          sp.setString("age", r['age']);
-          sp.setString("weight", r['weight']);
-          sp.setString("taluk", r['localty']);
-          sp.setString("contacts", r['contacts']);
-          sp.setString("alt_contact", r['alt_contact_no']);
-          sp.setString("email", r['email']);
-          sp.setString("last_don", r['last_don']);
-          sp.setString("status", r['status']);
-          sp.setString("for_time", r['for_time']);
-          sp.setString("blood_group", r['bloodgroup']);
-          sp.setString("fcm_token",r['fcm_token']);
-           g.g_n = sp.get("name");
-      g.g_bg = sp.get("blood_group");
-          setState(() {
-            logged=false;
-            Navigator.pop(context, () {
-              setState(() {});
-            });
-            showDialog(
-                context: context,
-                child: AlertDialog(
-                  content: Text(
-                    "Welcome back " + capname.toUpperCase(),
-                    style: TextStyle(fontSize: 20, color: Color(0xFFEE5623)),
-                  ),
-                ));
-          });
-        } else {
-          setState(() {
-            showDialog(
-                context: context,
-                child: AlertDialog(
-                  content: Text(res.body,
-                      style: TextStyle(fontSize: 20, color: Color(0xFFEE5623))),
-                  actions: <Widget>[
-                    InkWell(
-                        onTap: () => Navigator.pop(context),
-                        child: Text("OK",
+                  InkWell(
+                    onTap: () async {
+                      setState(() {
+                        logged = true;
+                      });
+                      var bd = json.encode(
+                          {"uname": em.text, "pass": ut.encrypt(pass.text)});
+                      res = await http.post(
+                          Uri.parse(g.baseUrl + "/UserLogin.php"),
+                          body: bd);
+                      print(res.statusCode);
+                      print(res.body);
+                      setState(() {
+                        logged = false;
+                      });
+                      if (res.body != "Invalid Username/Password") {
+                        var r = json.decode(res.body);
+                        print(r['name']);
+                        String capname = r['name'];
+                        AlertDialog ifAlert = AlertDialog(
+                          content: Text(
+                            "Welcome back " + capname.toUpperCase(),
                             style: TextStyle(
-                              fontSize: 15,
-                              color: Color(0xFFEE5623),
-                            )))
-                  ],
-                ));
-          });
-        }
-      },
-      child: Container(
-        height: 56.0,
-        width: MediaQuery.of(context).size.width,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(40.0),
-          gradient: LinearGradient(
-              colors: [Color(0xFFFB415B), Color(0xFFEE5623)],
-              begin: Alignment.centerRight,
-              end: Alignment.centerLeft),
-        ),
-        child: Center(
-          child: Text(
-            "LOGIN",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18.0,
-            ),
-          ),
-        ),
-      ),
-    ),
+                                fontSize: 20, color: Color(0xFFEE5623)),
+                          ),
+                        );
+                        final SharedPreferences sp =
+                            await SharedPreferences.getInstance();
+                        sp.setString("name", r['name']);
+                        sp.setString("username", r['username']);
+                        sp.setString("password", r['pass']);
+                        sp.setString("gender", r['gender']);
+                        sp.setString("district", r['district']);
+                        sp.setString("age", r['age']);
+                        sp.setString("weight", r['weight']);
+                        sp.setString("taluk", r['localty']);
+                        sp.setString("contacts", r['contacts']);
+                        sp.setString("alt_contact", r['alt_contact_no']);
+                        sp.setString("email", r['email']);
+                        sp.setString("last_don", r['last_don']);
+                        sp.setString("status", r['status']);
+                        sp.setString("for_time", r['for_time']);
+                        sp.setString("blood_group", r['bloodgroup']);
+                        sp.setString("fcm_token", r['fcm_token']);
+                        g.g_n = sp.get("name");
+                        g.g_bg = sp.get("blood_group");
+                        setState(() {
+                          logged = false;
+                          Navigator.pop(context, () {
+                            setState(() {});
+                          });
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return ifAlert;
+                            },
+                          );
+                        });
+                      } else {
+                        AlertDialog elseAlert = AlertDialog(
+                          content: Text(res.body,
+                              style: TextStyle(
+                                  fontSize: 20, color: Color(0xFFEE5623))),
+                          actions: <Widget>[
+                            InkWell(
+                                onTap: () => Navigator.pop(context),
+                                child: Text("OK",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Color(0xFFEE5623),
+                                    )))
+                          ],
+                        );
+                        setState(() {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return elseAlert;
+                              }
+                              // child: AlertDialog(
+                              //   content: Text(res.body,
+                              //       style: TextStyle(
+                              //           fontSize: 20,
+                              //           color: Color(0xFFEE5623))),
+                              //   actions: <Widget>[
+                              //     InkWell(
+                              //         onTap: () => Navigator.pop(context),
+                              //         child: Text("OK",
+                              //             style: TextStyle(
+                              //               fontSize: 15,
+                              //               color: Color(0xFFEE5623),
+                              //             )))
+                              //   ],
+                              // ));
+                              );
+                        });
+                      }
+                    },
+                    child: Container(
+                      height: 56.0,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(40.0),
+                        gradient: LinearGradient(
+                            colors: [Color(0xFFFB415B), Color(0xFFEE5623)],
+                            begin: Alignment.centerRight,
+                            end: Alignment.centerLeft),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "LOGIN",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                   SizedBox(
                     height: 10.0,
                   ),
@@ -198,7 +234,8 @@ class _LoginPageState extends State<LoginPage> {
                               onTap: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => MobileVerfication())),
+                                      builder: (context) =>
+                                          MobileVerfication())),
                               child: Text("SIGN UP",
                                   style: TextStyle(
                                     color: Theme.of(context).primaryColor,
@@ -209,9 +246,9 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ],
               ),
+            ),
           ),
-        ),
-            )));
+        )));
   }
 
   Widget buildTextField(String hintText, TextEditingController t) {
@@ -245,6 +282,4 @@ class _LoginPageState extends State<LoginPage> {
       obscureText: hintText == "Password" ? _isHidden : false,
     );
   }
-
-  
 }

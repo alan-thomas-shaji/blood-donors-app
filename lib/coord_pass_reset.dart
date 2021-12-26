@@ -7,8 +7,8 @@ import 'globals.dart' as g;
 import 'package:http/http.dart' as http;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+bool reset = false;
 
-bool reset=false;
 class PasswordReset extends StatefulWidget {
   String username;
   PasswordReset({this.username});
@@ -30,9 +30,12 @@ class _PasswordResetState extends State<PasswordReset> {
     return MaterialApp(
       theme: ut.maintheme(),
       home: ModalProgressHUD(
-        progressIndicator: SpinKitHourGlass(color:Colors.red,size:80,),
+        progressIndicator: SpinKitHourGlass(
+          color: Colors.red,
+          size: 80,
+        ),
         inAsyncCall: reset,
-              child: Scaffold(
+        child: Scaffold(
           key: _scaffoldKey1,
           appBar: AppBar(
             title: Text('Password Reset'),
@@ -153,23 +156,22 @@ class _PasswordResetState extends State<PasswordReset> {
 
   postData3(String s, BuildContext context) async {
     setState(() {
-      reset=true;
+      reset = true;
     });
     var bd = jsonEncode({
       "username": username,
       "password": pass.text,
     });
-    var res = await http.post(s+"/coord_pass_reset.php", body: bd);
+    var res = await http.post(Uri.parse(s + "/coord_pass_reset.php"), body: bd);
     String reg = "";
     reg = jsonDecode(res.body);
     setState(() {
-      reset=false;
+      reset = false;
     });
     if (reg != 'Invalid Username..!' && reg != 'Try Again') {
       ut.showtoast(reg, Colors.green);
       Navigator.pop(context);
-    }
-    else{
+    } else {
       ut.showtoast(reg, Colors.red);
     }
   }

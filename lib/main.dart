@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:revive/notify.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,13 +9,15 @@ import 'intro.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'globals.dart' as g;
-void main() {
+
+void main() async {
   //asyncFunc();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MaterialApp(
     title: 'Navigation Basics',
     home: Splash(),
     debugShowCheckedModeBanner: false,
-
   ));
 }
 
@@ -50,8 +53,8 @@ class SplashScreenState extends State<Splash> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => start(context));
-
   }
+
   void start(BuildContext) {
     asyncFunc(BuildContext);
   }
@@ -67,11 +70,10 @@ class SplashScreenState extends State<Splash> {
         title: 'Student Login',
         theme: ut.maintheme(),
         home: Scaffold(
-          /*appBar: AppBar(
+            /*appBar: AppBar(
               title: Text("Splash"),
             ),*/
 
             body: Container(decoration: ut.bg())));
   }
-
 }

@@ -34,8 +34,8 @@ class _RequestListState extends State<RequestList> {
       setState(() {
         ind = true;
       });
-    final res = await http.post(g.baseUrl + "/request_list.php",
-        body: jsonEncode({"dis0": dis0, "dis1": dis1,"pageno":page}));
+    final res = await http.post(Uri.parse(g.baseUrl + "/request_list.php"),
+        body: jsonEncode({"dis0": dis0, "dis1": dis1, "pageno": page}));
     print(res.statusCode);
     setState(() {
       if (lis.isNotEmpty) ind = false;
@@ -53,8 +53,8 @@ class _RequestListState extends State<RequestList> {
   }
 
   void initState() {
-     super.initState();
-    _scroll1= new ScrollController();
+    super.initState();
+    _scroll1 = new ScrollController();
     getData();
     _scroll1.addListener(() {
       if (_scroll1.position.pixels == _scroll1.position.maxScrollExtent) {
@@ -67,12 +67,13 @@ class _RequestListState extends State<RequestList> {
       }
     });
   }
- 
- @override
+
+  @override
   void dispose() {
     _scroll1.dispose();
     super.dispose();
-  } 
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -117,216 +118,227 @@ class _RequestListState extends State<RequestList> {
                         ),
                       )
                     : ModalProgressHUD(
-                      inAsyncCall: ind,
-                                          child: ListView.builder(
-                                            controller: _scroll1,
-                          itemCount: lis?.length ?? 0,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              child: Container(
-                                padding: EdgeInsets.all(5.0),
-                                // height: 420,
-                                width: MediaQuery.of(context).size.width,
-                                child: Card(
-                                    child: Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Row(
-                                        children: <Widget>[
-                                          CircleAvatar(
-                                            child: KoukiconsBusinessman(),
-                                            radius: 30,
-                                          ),
-                                          SizedBox(width: 10),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Text(
-                                                  lis[index]['name']
+                        inAsyncCall: ind,
+                        child: ListView.builder(
+                            controller: _scroll1,
+                            itemCount: lis?.length ?? 0,
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                child: Container(
+                                  padding: EdgeInsets.all(5.0),
+                                  // height: 420,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Card(
+                                      child: Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Row(
+                                          children: <Widget>[
+                                            CircleAvatar(
+                                              child: KoukiconsBusinessman(),
+                                              radius: 30,
+                                            ),
+                                            SizedBox(width: 10),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text(
+                                                    lis[index]['name']
+                                                        .toString()
+                                                        .toUpperCase(),
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 25)),
+                                                Text(
+                                                    "Posted on :" +
+                                                        lis[index][
+                                                                'requested_time']
+                                                            .substring(0, 10) +
+                                                        "," +
+                                                        lis[index][
+                                                                'requested_time']
+                                                            .substring(11, 16),
+                                                    style: TextStyle(
+                                                        color: Colors.orange))
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 10),
+                                        Divider(),
+                                        SizedBox(height: 10),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Text(
+                                              "Patient name: " +
+                                                  lis[index]['patient_name']
                                                       .toString()
                                                       .toUpperCase(),
+                                              style: TextStyle(
+                                                  color: Colors.blue[900],
+                                                  fontSize: 20),
+                                            ),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            Text(
+                                              "Patient case: " +
+                                                  lis[index]['patient_case'],
+                                              style: TextStyle(
+                                                  color: Colors.blue[900],
+                                                  fontSize: 20),
+                                            )
+                                          ],
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: <Widget>[
+                                            Column(
+                                              children: <Widget>[
+                                                KoukiconsCalendar(),
+                                                Text(
+                                                  "Date : " +
+                                                      lis[index]['date']
+                                                          .substring(0, 10),
                                                   style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 25)),
-                                              Text(
-                                                  "Posted on :" +
-                                                      lis[index]['requested_time']
-                                                          .substring(0, 10) +
-                                                      "," +
-                                                      lis[index]['requested_time']
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              ],
+                                            ),
+                                            Column(
+                                              children: <Widget>[
+                                                KoukiconsClocktime(
+                                                  height: 43,
+                                                ),
+                                                Text(
+                                                  "Time : " +
+                                                      lis[index]['date']
                                                           .substring(11, 16),
                                                   style: TextStyle(
-                                                      color: Colors.orange))
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 10),
-                                      Divider(),
-                                      SizedBox(height: 10),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Text(
-                                            "Patient name: " +
-                                                lis[index]['patient_name']
-                                                    .toString()
-                                                    .toUpperCase(),
-                                            style: TextStyle(
-                                                color: Colors.blue[900],
-                                                fontSize: 20),
-                                          ),
-                                          SizedBox(
-                                            height: 5,
-                                          ),
-                                          Text(
-                                            "Patient case: " +
-                                                lis[index]['patient_case'],
-                                            style: TextStyle(
-                                                color: Colors.blue[900],
-                                                fontSize: 20),
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: <Widget>[
-                                          Column(
-                                            children: <Widget>[
-                                              KoukiconsCalendar(),
-                                              Text(
-                                                "Date : " +
-                                                    lis[index]['date']
-                                                        .substring(0, 10),
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 15),
+                                        Text(
+                                          'Hospital : ' +
+                                              lis[index]['hospital'] +
+                                              ", " +
+                                              lis[index]['taluk'],
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 19),
+                                        ),
+                                        SizedBox(height: 10),
+                                        Row(
+                                          children: <Widget>[
+                                            Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 3, horizontal: 10),
+                                              margin: EdgeInsets.all(0),
+                                              decoration: ut.rounded(
+                                                  Colors.red, false, 40),
+                                              child: Text(
+                                                'Required units :' +
+                                                    lis[index]['bloodqty'],
                                                 style: TextStyle(
-                                                    fontWeight: FontWeight.bold),
-                                              )
-                                            ],
-                                          ),
-                                          Column(
-                                            children: <Widget>[
-                                              KoukiconsClocktime(
-                                                height: 43,
+                                                    color: Colors.white,
+                                                    fontSize: 20,
+                                                    fontWeight:
+                                                        FontWeight.bold),
                                               ),
-                                              Text(
-                                                "Time : " +
-                                                    lis[index]['date']
-                                                        .substring(11, 16),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 3, horizontal: 10),
+                                              margin: EdgeInsets.all(0),
+                                              decoration: ut.rounded(
+                                                  Colors.red, false, 40),
+                                              child: Text(
+                                                lis[index]['bloodgroup'],
                                                 style: TextStyle(
-                                                    fontWeight: FontWeight.bold),
-                                              )
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 15),
-                                      Text(
-                                        'Hospital : ' +
-                                            lis[index]['hospital'] +
-                                            ", " +
-                                            lis[index]['taluk'],
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 19),
-                                      ),
-                                      SizedBox(height: 10),
-                                      Row(
-                                        children: <Widget>[
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 3, horizontal: 10),
-                                            margin: EdgeInsets.all(0),
-                                            decoration:
-                                                ut.rounded(Colors.red, false, 40),
-                                            child: Text(
-                                              'Required units :' +
-                                                  lis[index]['bloodqty'],
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold),
+                                                    color: Colors.white,
+                                                    fontSize: 20,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 3, horizontal: 10),
-                                            margin: EdgeInsets.all(0),
-                                            decoration:
-                                                ut.rounded(Colors.red, false, 40),
-                                            child: Text(
-                                              lis[index]['bloodgroup'],
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold),
+                                          ],
+                                        ),
+                                        SizedBox(height: 10),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: <Widget>[
+                                            Icon(
+                                              Icons.location_on,
+                                              color: Colors.blue,
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(height: 10),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.location_on,
-                                            color: Colors.blue,
-                                          ),
-                                          Text(
-                                            lis[index]['taluk'] +
-                                                "," +
-                                                lis[index]['district'],
-                                            style: TextStyle(
-                                                color: Colors.blue[900],
-                                                fontSize: 16),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                )),
-                              ),
-                              onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => BloodRequestDetails(
-                                          name: lis[index]['name'],
-                                          age: lis[index]['age'],
-                                          date: lis[index]['date'],
-                                          district: lis[index]['district'],
-                                          taluk: lis[index]['taluk'],
-                                          hospital: lis[index]['hospital'],
-                                          group: lis[index]['bloodgroup'],
-                                          number: lis[index]
-                                              ['bystander_contacts'],
-                                          altNumber: lis[index]
-                                              ['bystander_alt_contacts'],
-                                          units: lis[index]['bloodqty'],
-                                          requested_time: lis[index]
-                                              ['requested_time'],
-                                          pat_name: lis[index]['patient_name'],
-                                          pat_case: lis[index]['patient_case'],
-                                        )),
-                              ).then((var value) {
-                                setState(() {
-                                  if(g.del==true)lis.removeAt(index);
-                                  g.del=false;
-                                });
-                              }),
-                            );
-                          }),
-                    ),
+                                            Text(
+                                              lis[index]['taluk'] +
+                                                  "," +
+                                                  lis[index]['district'],
+                                              style: TextStyle(
+                                                  color: Colors.blue[900],
+                                                  fontSize: 16),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  )),
+                                ),
+                                onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => BloodRequestDetails(
+                                            name: lis[index]['name'],
+                                            age: lis[index]['age'],
+                                            date: lis[index]['date'],
+                                            district: lis[index]['district'],
+                                            taluk: lis[index]['taluk'],
+                                            hospital: lis[index]['hospital'],
+                                            group: lis[index]['bloodgroup'],
+                                            number: lis[index]
+                                                ['bystander_contacts'],
+                                            altNumber: lis[index]
+                                                ['bystander_alt_contacts'],
+                                            units: lis[index]['bloodqty'],
+                                            requested_time: lis[index]
+                                                ['requested_time'],
+                                            pat_name: lis[index]
+                                                ['patient_name'],
+                                            pat_case: lis[index]
+                                                ['patient_case'],
+                                          )),
+                                ).then((var value) {
+                                  setState(() {
+                                    if (g.del == true) lis.removeAt(index);
+                                    g.del = false;
+                                  });
+                                }),
+                              );
+                            }),
+                      ),
           ),
         ));
   }

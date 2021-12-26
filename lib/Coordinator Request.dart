@@ -7,8 +7,8 @@ import 'globals.dart' as g;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+bool coord_req = false;
 
-bool coord_req=false;
 class BloodRequestDetails extends StatefulWidget {
   final String name;
   final String age;
@@ -20,23 +20,22 @@ class BloodRequestDetails extends StatefulWidget {
   final String units;
   final String taluk;
   final String group;
-  final String requested_time,pat_name,pat_case;
+  final String requested_time, pat_name, pat_case;
 
-  BloodRequestDetails({
-    @required this.name,
-    @required this.age,
-    @required this.date,
-    @required this.district,
-    @required this.taluk,
-    @required this.hospital,
-    @required this.group,
-    @required this.number,
-    @required this.altNumber,
-    @required this.units,
-    @required this.requested_time,
-    @required this.pat_name,
-    @required this.pat_case
-  });
+  BloodRequestDetails(
+      {@required this.name,
+      @required this.age,
+      @required this.date,
+      @required this.district,
+      @required this.taluk,
+      @required this.hospital,
+      @required this.group,
+      @required this.number,
+      @required this.altNumber,
+      @required this.units,
+      @required this.requested_time,
+      @required this.pat_name,
+      @required this.pat_case});
 
   @override
   _BloodRequestDetailsState createState() => _BloodRequestDetailsState(
@@ -49,21 +48,26 @@ class BloodRequestDetails extends StatefulWidget {
       this.altNumber,
       this.district,
       this.taluk,
-      this.hospital,this.requested_time,this.pat_name,this.pat_case);
+      this.hospital,
+      this.requested_time,
+      this.pat_name,
+      this.pat_case);
 }
 
 class _BloodRequestDetailsState extends State<BloodRequestDetails> {
-  setpref()async{
-    final SharedPreferences sp=await SharedPreferences.getInstance();
-    na=sp.getString('name');
+  setpref() async {
+    final SharedPreferences sp = await SharedPreferences.getInstance();
+    na = sp.getString('name');
   }
+
   @override
-  void initState(){
+  void initState() {
     setpref();
     id = new TextEditingController(text: this.na);
     // TODO: implement initState
     super.initState();
   }
+
   var na;
   final GlobalKey<FormState> _formKey1 = new GlobalKey<FormState>();
   List status = ["Emergency", "Not Emergency"];
@@ -78,10 +82,22 @@ class _BloodRequestDetailsState extends State<BloodRequestDetails> {
   String altNumber;
   String hospital;
   String units;
-  String taluk,pat_name,pat_case;
-  String group,requested_time;
-  _BloodRequestDetailsState(String n, String a, String da, String grp,
-      String un, String nu, String altNu, String di, String tlk, String hos,String rt,String pn,String pc) {
+  String taluk, pat_name, pat_case;
+  String group, requested_time;
+  _BloodRequestDetailsState(
+      String n,
+      String a,
+      String da,
+      String grp,
+      String un,
+      String nu,
+      String altNu,
+      String di,
+      String tlk,
+      String hos,
+      String rt,
+      String pn,
+      String pc) {
     this.name = n;
     this.age = a;
     this.date = da;
@@ -92,9 +108,9 @@ class _BloodRequestDetailsState extends State<BloodRequestDetails> {
     this.hospital = hos;
     this.units = un;
     this.group = grp;
-    this.requested_time=rt;
-    this.pat_name=pn;
-    this.pat_case=pc;
+    this.requested_time = rt;
+    this.pat_name = pn;
+    this.pat_case = pc;
   }
   String reg = "";
   @override
@@ -131,7 +147,7 @@ class _BloodRequestDetailsState extends State<BloodRequestDetails> {
             style: TextStyle(fontSize: 20.0),
           ),
         ),
-         ListTile(
+        ListTile(
           title: Text(
             "Case",
             style: TextStyle(color: Color(0xFFEE5623), fontSize: 15.0),
@@ -161,7 +177,7 @@ class _BloodRequestDetailsState extends State<BloodRequestDetails> {
             style: TextStyle(fontSize: 20.0),
           ),
         ),
-         ListTile(
+        ListTile(
           title: Text(
             "Bystander name",
             style: TextStyle(color: Color(0xFFEE5623), fontSize: 15.0),
@@ -221,7 +237,7 @@ class _BloodRequestDetailsState extends State<BloodRequestDetails> {
             style: TextStyle(fontSize: 20.0),
           ),
         ),
-         ListTile(
+        ListTile(
           title: Text(
             "Requested Date and Time:",
             style: TextStyle(color: Color(0xFFEE5623), fontSize: 15.0),
@@ -325,12 +341,8 @@ class _BloodRequestDetailsState extends State<BloodRequestDetails> {
         InkWell(
           onTap: () {
             if (_formKey1.currentState.validate()) {
-              
-                postData3(context,g.baseUrl);
-                
-             
-            }
-            else{
+              postData3(context, g.baseUrl);
+            } else {
               print('invalid');
             }
           },
@@ -362,12 +374,19 @@ class _BloodRequestDetailsState extends State<BloodRequestDetails> {
         appBar: AppBar(
           title: Text(name.toUpperCase()),
         ),
-        body: ModalProgressHUD(child: details,inAsyncCall: coord_req,progressIndicator: SpinKitHourGlass(color:Colors.red,size:80,),));
+        body: ModalProgressHUD(
+          child: details,
+          inAsyncCall: coord_req,
+          progressIndicator: SpinKitHourGlass(
+            color: Colors.red,
+            size: 80,
+          ),
+        ));
   }
 
-  postData3(BuildContext context,String s) async {
+  postData3(BuildContext context, String s) async {
     setState(() {
-      coord_req=true;
+      coord_req = true;
     });
     var bd = json.encode({
       "name": this.name,
@@ -383,31 +402,28 @@ class _BloodRequestDetailsState extends State<BloodRequestDetails> {
       "hosp": this.hospital,
       "verified": ve,
       "id": id.text,
-      "fcm_token":"",
-      "requested_time":requested_time,
-      "patient":pat_name,
-      "case":pat_case
+      "fcm_token": "",
+      "requested_time": requested_time,
+      "patient": pat_name,
+      "case": pat_case
     });
-    var res = await http.post(
-        s+"/coordinator_request.php",
-        body: bd);
+    var res =
+        await http.post(Uri.parse(s + "/coordinator_request.php"), body: bd);
     print(res.statusCode);
     reg = jsonDecode(res.body);
     setState(() {
-      coord_req=false;
+      coord_req = false;
     });
     print(reg);
-     if(reg!="Try Again"){
-       g.del=true;
-       setState(() {
-         Navigator.pop(context,(){
-           setState(() {
-             
-           });
-         });
-         ut.showtoast(reg,Colors.green);
-       });
-     }
+    if (reg != "Try Again") {
+      g.del = true;
+      setState(() {
+        Navigator.pop(context, () {
+          setState(() {});
+        });
+        ut.showtoast(reg, Colors.green);
+      });
+    }
     reg = '';
   }
 }

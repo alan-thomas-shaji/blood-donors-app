@@ -11,7 +11,8 @@ class PasswordReset1 extends StatefulWidget {
   String username;
   PasswordReset1({this.username});
   @override
-  _PasswordReset1State createState() => _PasswordReset1State(username: username);
+  _PasswordReset1State createState() =>
+      _PasswordReset1State(username: username);
 }
 
 final GlobalKey<ScaffoldState> _scaffoldKey1 = new GlobalKey<ScaffoldState>();
@@ -20,7 +21,7 @@ class _PasswordReset1State extends State<PasswordReset1> {
   String username;
   _PasswordReset1State({this.username});
   final GlobalKey<FormState> _formKey1 = new GlobalKey<FormState>();
-  bool passchange=false;
+  bool passchange = false;
   TextEditingController un = new TextEditingController();
   TextEditingController pass = new TextEditingController();
   TextEditingController repass = new TextEditingController();
@@ -38,9 +39,12 @@ class _PasswordReset1State extends State<PasswordReset1> {
           ),
         ),
         body: ModalProgressHUD(
-          progressIndicator: SpinKitHourGlass(color:Colors.red,size:80,),
-inAsyncCall: passchange,
-                  child: SingleChildScrollView(
+          progressIndicator: SpinKitHourGlass(
+            color: Colors.red,
+            size: 80,
+          ),
+          inAsyncCall: passchange,
+          child: SingleChildScrollView(
             child: Form(
                 key: _formKey1,
                 autovalidate: true,
@@ -52,7 +56,7 @@ inAsyncCall: passchange,
                         height: 20,
                       ),
                       //username
-                      
+
                       //password
                       TextFormField(
                         validator: (value) {
@@ -154,28 +158,27 @@ inAsyncCall: passchange,
 
   postData3(String s, BuildContext context) async {
     setState(() {
-      passchange=true;
+      passchange = true;
     });
     final SharedPreferences sp = await SharedPreferences.getInstance();
-    
+
     var bd = jsonEncode({
       "username": username,
       "password": ut.encrypt(pass.text),
     });
-    var res = await http.post(s+"/user_pass_reset.php", body: bd);
+    var res = await http.post(Uri.parse(s + "/user_pass_reset.php"), body: bd);
     String reg = "";
     print(res.statusCode);
     reg = jsonDecode(res.body);
     setState(() {
-      passchange=false;
+      passchange = false;
     });
     print(res.body);
     if (reg != 'Invalid Username..!' && reg != 'Try Again') {
       sp.setString("password", ut.encrypt(pass.text));
       ut.showtoast(reg, Colors.green);
       Navigator.pop(context);
-    }
-    else{
+    } else {
       ut.showtoast(reg, Colors.red);
     }
   }

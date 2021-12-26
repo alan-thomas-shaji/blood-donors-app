@@ -15,7 +15,7 @@ class UsernameReset1 extends StatefulWidget {
 final GlobalKey<ScaffoldState> _scaffoldKey1 = new GlobalKey<ScaffoldState>();
 
 class _UsernameReset1State extends State<UsernameReset1> {
-  bool changed=false;
+  bool changed = false;
   final GlobalKey<FormState> _formKey1 = new GlobalKey<FormState>();
   TextEditingController un = new TextEditingController();
   TextEditingController pass = new TextEditingController();
@@ -34,9 +34,12 @@ class _UsernameReset1State extends State<UsernameReset1> {
           ),
         ),
         body: ModalProgressHUD(
-          progressIndicator: SpinKitHourGlass(color:Colors.red,size:80,),
+          progressIndicator: SpinKitHourGlass(
+            color: Colors.red,
+            size: 80,
+          ),
           inAsyncCall: changed,
-                  child: SingleChildScrollView(
+          child: SingleChildScrollView(
             child: Form(
                 key: _formKey1,
                 autovalidate: true,
@@ -60,8 +63,8 @@ class _UsernameReset1State extends State<UsernameReset1> {
                         keyboardType: TextInputType.phone,
                         style: TextStyle(fontSize: 20),
                         decoration: InputDecoration(
-                            prefixIcon:
-                                (Icon(Icons.phone_android, color: Color(0xFFFB415B))),
+                            prefixIcon: (Icon(Icons.phone_android,
+                                color: Color(0xFFFB415B))),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20.0),
                             ),
@@ -81,9 +84,7 @@ class _UsernameReset1State extends State<UsernameReset1> {
                             return null;
                           }
                         },
-                       
                         controller: pass,
-                        
                         style: TextStyle(fontSize: 20),
                         decoration: InputDecoration(
                             prefixIcon:
@@ -99,7 +100,6 @@ class _UsernameReset1State extends State<UsernameReset1> {
                         height: 20,
                       ),
 
-                      
                       InkWell(
                         onTap: () {
                           callIt1(context);
@@ -148,28 +148,27 @@ class _UsernameReset1State extends State<UsernameReset1> {
   }
 
   postData3(String s, BuildContext context) async {
-   setState(() {
-      changed=true;
-   });
+    setState(() {
+      changed = true;
+    });
     final SharedPreferences sp = await SharedPreferences.getInstance();
     var bd = jsonEncode({
       "contacts": un.text,
       "username": pass.text,
     });
-    var res = await http.post(s+"/username_reset.php", body: bd);
+    var res = await http.post(Uri.parse(s + "/username_reset.php"), body: bd);
     String reg = "";
     print(res.statusCode);
     reg = jsonDecode(res.body);
     setState(() {
-      changed=false;
+      changed = false;
     });
     print(res.body);
     if (reg != 'Invalid Username..!' && reg != 'Try Again') {
       sp.setString("password", ut.encrypt(pass.text));
       ut.showtoast(reg, Colors.green);
       Navigator.pop(context);
-    }
-    else{
+    } else {
       ut.showtoast(reg, Colors.red);
     }
   }

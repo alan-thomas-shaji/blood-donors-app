@@ -36,93 +36,96 @@ import 'mobileverification.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mon;
 import 'dart:io';
 import 'package:google_fonts/google_fonts.dart';
+
 class HomeScreen extends StatefulWidget {
   @override
   HomeScreenState createState() => new HomeScreenState();
 }
 
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin=new FlutterLocalNotificationsPlugin();
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    new FlutterLocalNotificationsPlugin();
+
 class HomeScreenState extends State<HomeScreen> {
   SharedPreferences prefs;
-   bool addformbool=false,deleteform=false,dialog_active=false;
-  bool imageloading = true,isloading=false;
+  bool addformbool = false, deleteform = false, dialog_active = false;
+  bool imageloading = true, isloading = false;
   String popupval;
-File _image;
-  List images=[];
-  List imagewidgets=[];
+  File _image;
+  List images = [];
+  List imagewidgets = [];
   String photoupload;
-   
-    final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-   static const menuitems = <String>['add_a_photo','delete'];
+
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  static const menuitems = <String>['add_a_photo', 'delete'];
   asyncFunc(BuildContext) async {
     await setPrefs();
     await coordinatorsetPrefs();
     await initmon();
 
-        var initializationSettingsAndroid =
-    new AndroidInitializationSettings('app_icon');
+    var initializationSettingsAndroid =
+        new AndroidInitializationSettings('app_icon');
     var initializationSettingsIOS = new IOSInitializationSettings();
-    var initializationSettings = new InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,onSelectNotification: (String payload) async {
-      await notify(payload); //Navigator.push(context, MaterialPageRoute(builder: (context)=>Notify(payload: payload,)));
-
+    var initializationSettings = new InitializationSettings();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: (String payload) async {
+      await notify(
+          payload); //Navigator.push(context, MaterialPageRoute(builder: (context)=>Notify(payload: payload,)));
     });
   }
-    
-    void notify(payload) async{
-      
-      showDialog(context: context,
-          builder: (BuildContext context){
-            return AlertDialog(
-              title : new Text("Did you received blood?"),
-              actions: <Widget>[
-                FlatButton(onPressed: ()async{
-                   Navigator.pop(context);
-                var bd=jsonEncode({"contacts":payload});
-                var res=await http.post(g.baseUrl+"/del_emergency.php",body:bd);
-                var reg=jsonDecode(res.body);
-                if(res.statusCode==200){
-                  
-                 _firebaseMessaging.unsubscribeFromTopic(payload);
-                  ut.showtoast(reg, Colors.green);
-                 
-               }
 
-            }, child:Text('Yes')),
-             FlatButton(onPressed: ()async{
-                  Navigator.pop(context);
-               var bd=jsonEncode({"contacts":payload});
-                var res=await http.post(g.baseUrl+"/check_stat_emergency.php",body:bd);
-               var reg=jsonDecode(res.body);
-               if(res.statusCode==200){
-                 _firebaseMessaging.unsubscribeFromTopic(payload);
-                 ut.showtoast(reg, Colors.green);
-              
-              }
+  void notify(payload) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: new Text("Did you received blood?"),
+            actions: <Widget>[
+              TextButton(
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    var bd = jsonEncode({"contacts": payload});
+                    var res = await http.post(
+                        Uri.parse(g.baseUrl + "/del_emergency.php"),
+                        body: bd);
+                    var reg = jsonDecode(res.body);
+                    if (res.statusCode == 200) {
+                      _firebaseMessaging.unsubscribeFromTopic(payload);
+                      ut.showtoast(reg, Colors.green);
+                    }
+                  },
+                  child: Text('Yes')),
+              TextButton(
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    var bd = jsonEncode({"contacts": payload});
+                    var res = await http.post(
+                        Uri.parse(g.baseUrl + "/check_stat_emergency.php"),
+                        body: bd);
+                    var reg = jsonDecode(res.body);
+                    if (res.statusCode == 200) {
+                      _firebaseMessaging.unsubscribeFromTopic(payload);
+                      ut.showtoast(reg, Colors.green);
+                    }
+                  },
+                  child: Text('No')),
+            ],
+          );
+        });
+  }
 
-           }, child:Text('No')),
-              ],
-            );
-          });
-}
-    
-
-    
-    bool myInterceptor(bool stopDefaultButtonEvent) {
-    if(addformbool||deleteform||dialog_active){
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo routeInfo) {
+    if (addformbool || deleteform || dialog_active) {
       setState(() {
-        
-        addformbool=false;deleteform=false;dialog_active=false;
+        addformbool = false;
+        deleteform = false;
+        dialog_active = false;
       });
-    }
-    else{
-    return false;
+    } else {
+      return false;
     }
 
     return true;
   }
-
 
   @override
   void initState() {
@@ -134,30 +137,38 @@ File _image;
   void start(BuildContext) {
     asyncFunc(BuildContext);
   }
-     mon.Db db;
+
+  mon.Db db;
   initmon() async {
     db = new mon.Db(g.mongo_url);
-    await db.open().then((val){print("$val");});
+    await db.open().then((val) {
+      print("$val");
+    });
     loadimages();
   }
-  void addtolist(Map a){
+
+  void addtolist(Map a) {
     setState(() {
       imagewidgets.add(a['image']);
-      var b = Image.memory(base64Decode(a['image']),fit: BoxFit.fill,);
+      var b = Image.memory(
+        base64Decode(a['image']),
+        fit: BoxFit.fill,
+      );
       images.add(b);
     });
-    
   }
-  loadimages() async{
-   imagewidgets.clear();
-   images.clear();
-   var gallery = db.collection("gallery");
-   await gallery.find().forEach(addtolist).then((onValue){print(onValue);
-    setState(() {
-      imageloading = false;
-      isloading= false;
+
+  loadimages() async {
+    imagewidgets.clear();
+    images.clear();
+    var gallery = db.collection("gallery");
+    await gallery.find().forEach(addtolist).then((onValue) {
+      print(onValue);
+      setState(() {
+        imageloading = false;
+        isloading = false;
+      });
     });
-    });   
   }
 
   @override
@@ -165,20 +176,20 @@ File _image;
     super.dispose();
   }
 
-Widget image_carouselhome() => Container(
-  height: 200,
-  child:  new Carousel(
-    boxFit : BoxFit.fitWidth,
-    images: images,
-    autoplay: true,
-    overlayShadowColors: Colors.white,
-    animationCurve: Curves.fastOutSlowIn,
-    animationDuration: Duration(milliseconds: 1000),
-    dotSize: 4.0,
-    dotBgColor: Colors.transparent,
-    indicatorBgPadding: 10.0,
-  ),
-);
+  Widget image_carouselhome() => Container(
+        height: 200,
+        child: new Carousel(
+          boxFit: BoxFit.fitWidth,
+          images: images,
+          autoplay: true,
+          overlayShadowColors: Colors.white,
+          animationCurve: Curves.fastOutSlowIn,
+          animationDuration: Duration(milliseconds: 1000),
+          dotSize: 4.0,
+          dotBgColor: Colors.transparent,
+          indicatorBgPadding: 10.0,
+        ),
+      );
   @override
   Widget build(BuildContext context) {
     //Image slider
@@ -188,69 +199,75 @@ Widget image_carouselhome() => Container(
       theme: ut.maintheme(),
       home: Scaffold(
         appBar: AppBar(
-          title: Text('WK Blood Book',style: GoogleFonts.fugazOne(letterSpacing: 1.5),),
+          title: Text(
+            'WK Blood Book',
+            style: GoogleFonts.fugazOne(letterSpacing: 1.5),
+          ),
           //centerTitle: true,
           actions: <Widget>[
             InkWell(
               child: Row(
                 children: <Widget>[
-                 
-                 
                   g.g_l.isNotEmpty
-                      ? photoupload != "1"? IconButton(
-                          padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                          icon: Icon(
-                            Icons.account_circle,
-                            size: 25,
-                          ),
-                          onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => CoordinatorProfile())),
-                        ): PopupMenuButton(
-                              
-                          padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
-                              //enabled: ,
-                              onSelected:(value){
-                                if(value == 'add'){
-                            setState(() {
-                             addformbool = true;
-                             deleteform = false;
-                           });
-                                }
-                           if(value == 'delete'){
-                                setState(() {
-                                deleteform = true;
-                                addformbool = false;
-                              });
-                           }
-                                if(value == 'profile'){
-                                   Navigator.push(
+                      ? photoupload != "1"
+                          ? IconButton(
+                              padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                              icon: Icon(
+                                Icons.account_circle,
+                                size: 25,
+                              ),
+                              onPressed: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => CoordinatorProfile()));
+                                      builder: (context) =>
+                                          CoordinatorProfile())),
+                            )
+                          : PopupMenuButton(
+                              padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
+                              //enabled: ,
+                              onSelected: (value) {
+                                if (value == 'add') {
+                                  setState(() {
+                                    addformbool = true;
+                                    deleteform = false;
+                                  });
                                 }
-                               
-                              } ,
-                              itemBuilder: (BuildContext context) =>
-                              [ PopupMenuItem(
-                                value: "add",
-                                child:  Icon(Icons.add_a_photo,color: Colors.red,)
-                           
-                            ) ,
-                            PopupMenuItem(
-                              value: "delete",
-                              
-                                  child:  Icon(Icons.delete,color: Colors.red,)
-                              
-                              ),
-                              PopupMenuItem(value: "profile",
-                              child:Icon(Icons.account_circle,color: Colors.red,))
-                            
-                            ]
-                             )
+                                if (value == 'delete') {
+                                  setState(() {
+                                    deleteform = true;
+                                    addformbool = false;
+                                  });
+                                }
+                                if (value == 'profile') {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              CoordinatorProfile()));
+                                }
+                              },
+                              itemBuilder: (BuildContext context) => [
+                                    PopupMenuItem(
+                                        value: "add",
+                                        child: Icon(
+                                          Icons.add_a_photo,
+                                          color: Colors.red,
+                                        )),
+                                    PopupMenuItem(
+                                        value: "delete",
+                                        child: Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        )),
+                                    PopupMenuItem(
+                                        value: "profile",
+                                        child: Icon(
+                                          Icons.account_circle,
+                                          color: Colors.red,
+                                        ))
+                                  ])
                       : g.g_bg.isNotEmpty
-                          ?  IconButton(
+                          ? IconButton(
                               icon: Icon(
                                 Icons.account_circle,
                                 size: 25,
@@ -259,12 +276,11 @@ Widget image_carouselhome() => Container(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => Profile())),
-                            ) :
-                           
-                          SizedBox(
+                            )
+                          : SizedBox(
                               height: 1,
                             ),
-                           /* photoupload == "1" ? 
+                  /* photoupload == "1" ? 
                             
                             : SizedBox(
                               height: 1, 
@@ -284,10 +300,14 @@ Widget image_carouselhome() => Container(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('WK Blood Book',
-                      style: GoogleFonts.fugazOne(
-                        color:Colors.white,letterSpacing: 1.5,fontSize: 30,fontWeight: FontWeight.bold),),
-                   
+                      Text(
+                        'WK Blood Book',
+                        style: GoogleFonts.fugazOne(
+                            color: Colors.white,
+                            letterSpacing: 1.5,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold),
+                      ),
                       ut.caption()
                     ]),
               ),
@@ -322,8 +342,10 @@ Widget image_carouselhome() => Container(
               leading: Icon(Icons.group),
               title: Text('Our Coordinators'),
               onTap: () {
-                 Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => CoordinatorsList()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CoordinatorsList()));
               },
             ),
             g.g_bg.isNotEmpty
@@ -365,7 +387,7 @@ Widget image_carouselhome() => Container(
                     },
                   )
                 : SizedBox(width: 1),
-            g.g_l.isNotEmpty||g.g_bg.isNotEmpty
+            g.g_l.isNotEmpty || g.g_bg.isNotEmpty
                 ? ListTile(
                     leading: Icon(Icons.power_settings_new),
                     title: Text('Log out'),
@@ -400,7 +422,7 @@ Widget image_carouselhome() => Container(
                                         g.g_n = '';
                                         g.g_bg = '';
                                         g.g_l = '';
-                                        photoupload='';
+                                        photoupload = '';
                                       });
                                       Navigator.pop(context);
                                     },
@@ -452,7 +474,8 @@ Widget image_carouselhome() => Container(
                                       String uname = sp.getString("username");
                                       var bd = jsonEncode({"username": uname});
                                       var result = await http.post(
-                                          g.baseUrl + "/delete_account.php",
+                                          Uri.parse(g.baseUrl +
+                                              "/delete_account.php"),
                                           body: bd);
                                       Navigator.pop(context);
                                       ut.showtoast(
@@ -510,16 +533,16 @@ Widget image_carouselhome() => Container(
                 : SizedBox(
                     width: 1,
                   ),
-                  ListTile(
+            ListTile(
               leading: Icon(Icons.question_answer),
               title: Text('FAQs'),
               onTap: () {
-               Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Faq()),
-    ).then((var value) {
-      //CODE HERE to execute if you back to this page from signup
-    });
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Faq()),
+                ).then((var value) {
+                  //CODE HERE to execute if you back to this page from signup
+                });
               },
             ),
             ListTile(
@@ -542,82 +565,122 @@ Widget image_carouselhome() => Container(
           ],
         )),
         body: Stack(
-                  children: <Widget>[
-                    if(!imageloading&&addformbool)addform(this),
-            if(!imageloading&&deleteform)del(),
-            if(imageloading)ut.loader(),
-            if(!imageloading&&!addformbool&&!deleteform)
-            LayoutBuilder(builder:
-                (BuildContext context, BoxConstraints viewportConstraints) {
-              return SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints:
-                      BoxConstraints(minHeight: viewportConstraints.maxHeight),
-                  child: IntrinsicHeight(
-                    child:  Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              margin: EdgeInsets.only(bottom: 20),
-                              height:250,
-                              child: isloading ? Padding(
-                                padding: const EdgeInsets.all(110.0),
-                                child: CircularProgressIndicator(),
-                              ) : images.length == 0? ut.empty_server("No images to show") : image_carouselhome(),
+          children: <Widget>[
+            if (!imageloading && addformbool) addform(this),
+            if (!imageloading && deleteform) del(),
+            if (imageloading) ut.loader(),
+            if (!imageloading && !addformbool && !deleteform)
+              LayoutBuilder(builder:
+                  (BuildContext context, BoxConstraints viewportConstraints) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                        minHeight: viewportConstraints.maxHeight),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.only(bottom: 20),
+                            height: 250,
+                            child: isloading
+                                ? Padding(
+                                    padding: const EdgeInsets.all(110.0),
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : images.length == 0
+                                    ? ut.empty_server("No images to show")
+                                    : image_carouselhome(),
+                          ),
+                          ut.banner(),
+                          if (g.g_l.isEmpty)
+                            SizedBox(
+                              height: 20,
                             ),
-                            ut.banner(),
-                            if(g.g_l.isEmpty)SizedBox(height: 20,),
 
-
-                            if(g.g_l.isNotEmpty || g.g_bg.isNotEmpty)InkWell(
-                              onTap: () {bloodrequest();},
-                              child: ut.mainbutton("Request blood")
-                            ),
-                            //Login and signup button
-                            Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment: MainAxisAlignment.start,
+                          if (g.g_l.isNotEmpty || g.g_bg.isNotEmpty)
+                            InkWell(
+                                onTap: () {
+                                  bloodrequest();
+                                },
+                                child: ut.mainbutton("Request blood")),
+                          //Login and signup button
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Expanded(
+                                  child: Container(
+                                padding: EdgeInsets.only(left: 20),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[
-                                    Expanded(child:Container(
-                                      padding: EdgeInsets.only(left: 20),
-
-                                      child:Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-
-                                     g.g_l.isNotEmpty||g.g_bg.isNotEmpty?SizedBox(width:2):InkWell(child:Row(children: <Widget>[
-
-                                        Text("User Login",
-                                          style: TextStyle(fontWeight: FontWeight.w600,
-                                          color: Colors.black,
-                                          fontSize: 20),),
-                                        ut.
-                                        roundicon(Icons.keyboard_arrow_right,
-                                            Colors.white, Colors.black,
-                                            25, 0)
-                                      ],),onTap: (){login();},),
-                                       SizedBox(width: 10,),
-
-                                        g.g_l.isNotEmpty||g.g_bg.isNotEmpty?SizedBox(width:2): InkWell(child:Column(children: <Widget>[
+                                    g.g_l.isNotEmpty || g.g_bg.isNotEmpty
+                                        ? SizedBox(width: 2)
+                                        : InkWell(
+                                            child: Row(
+                                              children: <Widget>[
+                                                Text(
+                                                  "User Login",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.black,
+                                                      fontSize: 20),
+                                                ),
+                                                ut.roundicon(
+                                                    Icons.keyboard_arrow_right,
+                                                    Colors.white,
+                                                    Colors.black,
+                                                    25,
+                                                    0)
+                                              ],
+                                            ),
+                                            onTap: () {
+                                              login();
+                                            },
+                                          ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    g.g_l.isNotEmpty || g.g_bg.isNotEmpty
+                                        ? SizedBox(width: 2)
+                                        : InkWell(
+                                            child: Column(
+                                              children: <Widget>[
 //                                  Text("New user? ",
 //                                      style: TextStyle(fontWeight: FontWeight.w400,
 //                                      color: Colors.grey[600],
 //                                      fontSize: 18)),
-                                         Row(children: <Widget>[
-                                            Text("Register here",
-                                              style: TextStyle(fontWeight: FontWeight.w400,
-                                                  color: Colors.blue,
-                                                  fontSize: 18)),
-                                          ut.
-                                          roundicon(Icons.keyboard_arrow_right,
-                                              Colors.white, Colors.blue,
-                                              25, 0)
-                                         ],)
-                                        ],),onTap: (){signup();},),
-                                    ],),)),
+                                                Row(
+                                                  children: <Widget>[
+                                                    Text("Register here",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color: Colors.blue,
+                                                            fontSize: 18)),
+                                                    ut.roundicon(
+                                                        Icons
+                                                            .keyboard_arrow_right,
+                                                        Colors.white,
+                                                        Colors.blue,
+                                                        25,
+                                                        0)
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                            onTap: () {
+                                              signup();
+                                            },
+                                          ),
+                                  ],
+                                ),
+                              )),
 
-                                    /*g.g_n.isEmpty
+                              /*g.g_n.isEmpty
                                         ? InkWell(
                                                 onTap: () {
                                                   signup();
@@ -626,41 +689,47 @@ Widget image_carouselhome() => Container(
                                                     Icons.person,Colors.white))
                                         : SizedBox(width: 1),*/
 
-                                    SizedBox(width: 20,)
-                                  ],
-                            ),
-                            SizedBox(height: 20,),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                g.g_n.isEmpty
-                                    ? InkWell(
-                                    onTap: () {
-                                      coordinatorLogin();
-                                    },
-                                    child: ut.iconbutton("Coordinator login",
-                                        KoukiconsAssistant(height: 25,))
-                                )
-                                    : SizedBox(width: 1),
-                              ],
-                            ),
-                            SizedBox(height: 30,),
-                            InkWell(
-                                onTap: () {
-                                  newsfeed(true);
-                                },
-                                child: ut.mainbutton("Request feed")
-                            ),
-                            Expanded(child: Container(),),
-
-                          ],
-                        ),
-                      
-                    
+                              SizedBox(
+                                width: 20,
+                              )
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              g.g_n.isEmpty
+                                  ? InkWell(
+                                      onTap: () {
+                                        coordinatorLogin();
+                                      },
+                                      child: ut.iconbutton(
+                                          "Coordinator login",
+                                          KoukiconsAssistant(
+                                            height: 25,
+                                          )))
+                                  : SizedBox(width: 1),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          InkWell(
+                              onTap: () {
+                                newsfeed(true);
+                              },
+                              child: ut.mainbutton("Request feed")),
+                          Expanded(
+                            child: Container(),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              );
-            }),
+                );
+              }),
           ],
         ),
       ),
@@ -704,18 +773,21 @@ Widget image_carouselhome() => Container(
       //CODE HERE to execute if you back to this page from signup
     });
   }
-  newsfeed(bool emergency){
+
+  newsfeed(bool emergency) {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ChooseGroup(emergency: emergency,)));
+            builder: (context) => ChooseGroup(
+                  emergency: emergency,
+                )));
   }
-  bloodrequest(){
+
+  bloodrequest() {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => BloodRequest()));
+        context, MaterialPageRoute(builder: (context) => BloodRequest()));
   }
+
   setPrefs() async {
     final SharedPreferences sp = await SharedPreferences.getInstance();
     setState(() {
@@ -734,72 +806,90 @@ Widget image_carouselhome() => Container(
       g.g_n = sp.get("name");
       g.g_l = sp.get("location");
       photoupload = sp.get("photo_upload");
-     // print(photoupload);
+      // print(photoupload);
       if (g.g_n == null || g.g_l == null) {
         g.g_n = '';
         g.g_l = '';
       }
     });
   }
-   Widget addform (State m)=>Container(
-    decoration: ut.mycard(Colors.white, 10.0, 20.0),
-    margin: EdgeInsets.all(10),
-    child: Column(
 
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [ 
-        Container(
-            padding: EdgeInsets.all(2),
-            margin: EdgeInsets.all(10),
-            decoration: ut.rounded2(Colors.orange, false, 10),
-            child: profilephotopicker(m)),
-        Container(
-            margin:EdgeInsets.all(10),
-            decoration : ut.rounded2(Colors.white,false,30),
-            child:InkWell(
-              onTap:() { _upload(m); },
-              child: ut.roundedtext("UPLOAD", Colors.orange,
-                  Colors.white),
-            )
-        )
-      ],
-    ),
-  );
+  Widget addform(State m) => Container(
+        decoration: ut.mycard(Colors.white, 10.0, 20.0),
+        margin: EdgeInsets.all(10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+                padding: EdgeInsets.all(2),
+                margin: EdgeInsets.all(10),
+                decoration: ut.rounded2(Colors.orange, false, 10),
+                child: profilephotopicker(m)),
+            Container(
+                margin: EdgeInsets.all(10),
+                decoration: ut.rounded2(Colors.white, false, 30),
+                child: InkWell(
+                  onTap: () {
+                    _upload(m);
+                  },
+                  child: ut.roundedtext("UPLOAD", Colors.orange, Colors.white),
+                ))
+          ],
+        ),
+      );
 
-  Widget profilephotopicker(State m){
+  Widget profilephotopicker(State m) {
     return InkWell(
-      onTap: (){showimageselector(m);dialog_active=true;},
-      child:
-      Container(
+      onTap: () {
+        showimageselector(m);
+        dialog_active = true;
+      },
+      child: Container(
         padding: EdgeInsets.all(10),
         color: Colors.grey[200],
-        child:Row(
+        child: Row(
           children: <Widget>[
             Expanded(
               flex: 5, // 70%
-              child: Container(color: Colors.grey[200],
-                  child:
-
-                  (_image== null)
+              child: Container(
+                  color: Colors.grey[200],
+                  child: (_image == null)
                       ? Text('No image selected.')
-                      : Image.file(_image,width: 200,height: 100,)
-
-              ),
+                      : Image.file(
+                          _image,
+                          width: 200,
+                          height: 100,
+                        )),
             ),
             Expanded(
               flex: 1, // 30%
-              child: Container(child: Icon(Icons.add_a_photo,color: Colors.purple,)),
+              child: Container(
+                  child: Icon(
+                Icons.add_a_photo,
+                color: Colors.purple,
+              )),
             ),
-            if(_image!=null)Expanded(
-              flex: 1, // 30%
-              child: InkWell(child:Container(child:
-              Icon(Icons.cancel,color: Colors.grey,)),
-                  onTap: (){setState(() {_image=null;});}
+            if (_image != null)
+              Expanded(
+                flex: 1, // 30%
+                child: InkWell(
+                    child: Container(
+                        child: Icon(
+                      Icons.cancel,
+                      color: Colors.grey,
+                    )),
+                    onTap: () {
+                      setState(() {
+                        _image = null;
+                      });
+                    }),
               ),
-            ),
           ],
-        ),),);
+        ),
+      ),
+    );
   }
+
   showimageselector(State m) async {
     return showDialog(
         context: m.context,
@@ -808,147 +898,155 @@ Widget image_carouselhome() => Container(
             backgroundColor: Colors.grey[100],
             contentPadding: EdgeInsets.all(10),
             titlePadding: EdgeInsets.all(0),
-            title:
-            Container(
+            title: Container(
                 color: Colors.grey[100],
-                child:
-                Row(children: <Widget>[
-                  Padding(
-                      padding: EdgeInsets.only(left: 20),
-                      child:Text("",
-                          style: TextStyle(color: Colors.white))),
-                  Expanded(
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child:IconButton(icon: Icon(Icons.cancel,
-                          color: Colors.grey[700],),
-                          onPressed: (){
-                            Navigator.of(context).pop();
-                            dialog_active=false;
-                          },),
-                      ))
-                ],)),
+                child: Row(
+                  children: <Widget>[
+                    Padding(
+                        padding: EdgeInsets.only(left: 20),
+                        child: Text("", style: TextStyle(color: Colors.white))),
+                    Expanded(
+                        child: Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.cancel,
+                          color: Colors.grey[700],
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          dialog_active = false;
+                        },
+                      ),
+                    ))
+                  ],
+                )),
             content: Container(
                 width: double.maxFinite,
-                padding: EdgeInsets.only(bottom:30),
-                child:
-                Row(
+                padding: EdgeInsets.only(bottom: 30),
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    iconitem(m, "Gallery", KoukiconsGallery(height: 60,),1),
-                    iconitem(m, "Camera", KoukiconsCamera2(),0)
-                  ],)
-            ),
+                    iconitem(
+                        m,
+                        "Gallery",
+                        KoukiconsGallery(
+                          height: 60,
+                        ),
+                        1),
+                    iconitem(m, "Camera", KoukiconsCamera2(), 0)
+                  ],
+                )),
           );
         });
   }
-  Widget iconitem(State m,String txt, Widget icon,type){
-    return InkWell(child:
-    Column(
-        mainAxisSize: MainAxisSize.min,
-        children:[
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            height: 80,width: 80,
-            decoration: ut.rounded2(Colors.grey[200], false, 400),
-            child: icon,),
-          Text("$txt")
-        ]),
-      onTap: (){getImage(m, type);},);
+
+  Widget iconitem(State m, String txt, Widget icon, type) {
+    return InkWell(
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          height: 80,
+          width: 80,
+          decoration: ut.rounded2(Colors.grey[200], false, 400),
+          child: icon,
+        ),
+        Text("$txt")
+      ]),
+      onTap: () {
+        getImage(m, type);
+      },
+    );
   }
-  Future getImage(State m,int type) async {
-    var image = await ImagePicker.pickImage(
-        source: (type==0)?ImageSource.camera:ImageSource.gallery);
+
+  Future getImage(State m, int type) async {
+    var image = await ImagePicker().pickImage(
+        source: (type == 0) ? ImageSource.camera : ImageSource.gallery);
     FocusScope.of(context).requestFocus(new FocusNode());
-    if(image!=null){
-        m.setState(() {
-          _image= image;
-         //image_selected=true;});
-        Navigator.pop(m.context);dialog_active=false;
-      });
-  }
-  }
-  void _upload(State m) async {
-  setState(() {
-    imageloading = true;
-  });
-   
-   
-      if (_image == null) return;
-     
-      //_image = testCompressAndGetFile(_image, targetPath)
- String base64Image = base64Encode(_image.readAsBytesSync());
-     
-      
-      var gallery = db.collection("gallery");
-
-      await gallery.insert({ "image": base64Image}).then((
-          onValue) {
-        ut.showtoast("Image inserted", Colors.teal);
-       // images.clear();
-
-        setState(() {
-          images.clear();
-          imagewidgets.clear();
-          addformbool=false;
-        
-        });
-        
-        loadimages();
+    if (image != null) {
+      m.setState(() {
+        _image = File(image.path);
+        //image_selected=true;});
+        Navigator.pop(m.context);
+        dialog_active = false;
       });
     }
+  }
 
-    Widget del()=>
-    Container(
-      decoration: ut.bg(),
-      child: ListView.builder(
-        itemCount: imagewidgets.length,
-        itemBuilder: (context, index) {
-          return Card(
-            elevation: 10,
-            child: ListTile(
-              title: Image.memory(base64Decode(imagewidgets[index])),
-              trailing:IconButton(icon: Icon(Icons.delete), onPressed:() {
-
-                showDialog(context: context,
-                    builder: (BuildContext context){
-                      return AlertDialog(
-                        title : new Text("Are you sure to delete this image"),
-                        actions: <Widget>[
-                          FlatButton(onPressed:(){
-                            deleteimage(
-                                imagewidgets[index]);
-                             }, child: new Text("ok"))
-                        ],
-                      );
-                    });
-
-
-              }) ,
-            ),
-          );
-        },
-      ),
-    );
-  deleteimage(String image) async{
+  void _upload(State m) async {
     setState(() {
-         imageloading=true;
+      imageloading = true;
+    });
 
+    if (_image == null) return;
+
+    //_image = testCompressAndGetFile(_image, targetPath)
+    String base64Image = base64Encode(_image.readAsBytesSync());
+
+    var gallery = db.collection("gallery");
+
+    await gallery.insert({"image": base64Image}).then((onValue) {
+      ut.showtoast("Image inserted", Colors.teal);
+      // images.clear();
+
+      setState(() {
+        images.clear();
+        imagewidgets.clear();
+        addformbool = false;
+      });
+
+      loadimages();
+    });
+  }
+
+  Widget del() => Container(
+        decoration: ut.bg(),
+        child: ListView.builder(
+          itemCount: imagewidgets.length,
+          itemBuilder: (context, index) {
+            return Card(
+              elevation: 10,
+              child: ListTile(
+                title: Image.memory(base64Decode(imagewidgets[index])),
+                trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title:
+                                  new Text("Are you sure to delete this image"),
+                              actions: <Widget>[
+                                FlatButton(
+                                    onPressed: () {
+                                      deleteimage(imagewidgets[index]);
+                                    },
+                                    child: new Text("ok"))
+                              ],
+                            );
+                          });
+                    }),
+              ),
+            );
+          },
+        ),
+      );
+  deleteimage(String image) async {
+    setState(() {
+      imageloading = true;
     });
     Navigator.pop(context);
     var gallery = db.collection("gallery");
-    await gallery.remove({"image":image}).then((onValue) {
-
+    await gallery.remove({"image": image}).then((onValue) {
       images.clear();
-
 
       setState(() {
         imagewidgets.clear();
         images.clear();
-        deleteform=false;
+        deleteform = false;
       });
-        loadimages();
+      loadimages();
     });
   }
 }
-  
