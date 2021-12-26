@@ -54,7 +54,7 @@ class _BloodBanksState extends State<BloodBanks> {
     });
   }
 
-  FutureOr<bool> myInterceptor(bool stopDefaultButtonEvent) {
+  FutureOr<bool> myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
     if (index == 2 || index == 3) {
       setState(() {
         index = 1;
@@ -88,7 +88,7 @@ class _BloodBanksState extends State<BloodBanks> {
           return AlertDialog(
             title: new Text("Are you sure you want to delete"),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                   onPressed: () {
                     var gallery = db.collection("bloodbanks");
                     gallery.remove({"_id": edit['_id']}).then((onValue) {
@@ -174,7 +174,7 @@ class _BloodBanksState extends State<BloodBanks> {
             return AlertDialog(
               title: new Text("Fields Cannot be empty"),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -218,7 +218,7 @@ class _BloodBanksState extends State<BloodBanks> {
             return AlertDialog(
               title: new Text("Fields Cannot be empty"),
               actions: <Widget>[
-                FlatButton(
+                TextButton(
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -280,11 +280,18 @@ class _BloodBanksState extends State<BloodBanks> {
                   decoration: InputDecoration(labelText: "Contact"),
                 ),
                 SizedBox(height: 10),
-                RaisedButton(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 45),
-                  color: Colors.red,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
+                ElevatedButton(
+                  style: ButtonStyle(
+                      // padding: EdgeInsets.symmetric(vertical: 10, horizontal: 45),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.red),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                      )),
+
+                  // shape: RoundedRectangleBorder(
+                  //     borderRadius: BorderRadius.circular(20)),
                   onPressed: () {
                     _update();
                   },
@@ -292,7 +299,7 @@ class _BloodBanksState extends State<BloodBanks> {
                     "Update ",
                     style: TextStyle(color: Colors.white),
                   ),
-                )
+                ),
               ]),
             ),
           )),

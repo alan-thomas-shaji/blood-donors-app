@@ -128,7 +128,10 @@ class _EditCoordinatorProfileState extends State<EditCoordinatorProfile> {
         key: _scaffoldKey,
         resizeToAvoidBottomInset: true,
         body: ModalProgressHUD(
-          progressIndicator: SpinKitHourGlass(color:Colors.red,size:80,),
+          progressIndicator: SpinKitHourGlass(
+            color: Colors.red,
+            size: 80,
+          ),
           inAsyncCall: coord,
           child: Container(
             //upper beizer curved container
@@ -199,7 +202,8 @@ class _EditCoordinatorProfileState extends State<EditCoordinatorProfile> {
                               }).toList(),
                               onChanged: (String val) {
                                 setState(() {
-                                  FocusScope.of(context).requestFocus(new FocusNode());
+                                  FocusScope.of(context)
+                                      .requestFocus(new FocusNode());
                                   this.d = val;
                                   l = g.tlk[d];
                                 });
@@ -242,7 +246,8 @@ class _EditCoordinatorProfileState extends State<EditCoordinatorProfile> {
                               }).toList(),
                               onChanged: (String val) {
                                 setState(() {
-                                  FocusScope.of(context).requestFocus(new FocusNode());
+                                  FocusScope.of(context)
+                                      .requestFocus(new FocusNode());
                                   this.tl = val;
                                   print(tl);
                                 });
@@ -406,7 +411,7 @@ class _EditCoordinatorProfileState extends State<EditCoordinatorProfile> {
 
   postData(String s, BuildContext context) async {
     setState(() {
-      coord=true;
+      coord = true;
     });
     var bd = json.encode({
       "name": fn.text,
@@ -419,12 +424,12 @@ class _EditCoordinatorProfileState extends State<EditCoordinatorProfile> {
       "requests": vd.text,
       "uname": username,
     });
-    var res =
-        await http.post(g.baseUrl + "/edit_coordinator_profile.php", body: bd);
+    var res = await http
+        .post(Uri.parse(g.baseUrl + "/edit_coordinator_profile.php"), body: bd);
     print(res.statusCode);
     reg = jsonDecode(res.body);
     setState(() {
-      coord=false;
+      coord = false;
     });
     print(res.body);
     if (reg != "Contact number Already Exists..!") {

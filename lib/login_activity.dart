@@ -106,7 +106,8 @@ class _LoginPageState extends State<LoginPage> {
                       });
                       var bd = json.encode(
                           {"uname": em.text, "pass": ut.encrypt(pass.text)});
-                      res = await http.post(g.baseUrl + "/UserLogin.php",
+                      res = await http.post(
+                          Uri.parse(g.baseUrl + "/UserLogin.php"),
                           body: bd);
                       print(res.statusCode);
                       print(res.body);

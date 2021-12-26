@@ -119,8 +119,8 @@ class _EditProfileState extends State<EditProfile> {
     cn = new TextEditingController(text: this.contacts);
     acn = new TextEditingController(text: this.alt_contacts);
     mail = new TextEditingController(text: this.email);
-    curr=this.last_don;
-    curr1=this.for_time;
+    curr = this.last_don;
+    curr1 = this.for_time;
     un = new TextEditingController(text: this.username);
     sbg = this.group;
     st = this.sta;
@@ -137,7 +137,7 @@ class _EditProfileState extends State<EditProfile> {
 
   //textediting controllers for all fields
   final format = DateFormat("yyyy-MM-dd");
-  var curr,curr1;
+  var curr, curr1;
   TextEditingController fn;
   TextEditingController age;
   TextEditingController weight;
@@ -148,7 +148,7 @@ class _EditProfileState extends State<EditProfile> {
 
 //required variables
   var t, r;
-  bool edited=false;
+  bool edited = false;
   Widget w = SizedBox(height: 10);
   String reg = "", sbg, st, gen, d, tl, p, m;
   final GlobalKey<FormState> _key1 = new GlobalKey<FormState>();
@@ -201,9 +201,12 @@ class _EditProfileState extends State<EditProfile> {
         key: _scaffoldKey,
         resizeToAvoidBottomInset: true,
         body: ModalProgressHUD(
-          progressIndicator: SpinKitHourGlass(color:Colors.red,size:80,),
+          progressIndicator: SpinKitHourGlass(
+            color: Colors.red,
+            size: 80,
+          ),
           inAsyncCall: edited,
-                  child: Container(
+          child: Container(
             //upper beizer curved container
             decoration: ut.bg(),
             child: Scrollbar(
@@ -243,10 +246,11 @@ class _EditProfileState extends State<EditProfile> {
                             //gender dropdown
                             DropdownButtonFormField<String>(
                               decoration: InputDecoration(
-                                  prefixIcon:
-                                      (Icon(Icons.wc, color: Color(0xFFFB415B))),
+                                  prefixIcon: (Icon(Icons.wc,
+                                      color: Color(0xFFFB415B))),
                                   border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20.0))),
+                                      borderRadius:
+                                          BorderRadius.circular(20.0))),
                               isExpanded: true,
                               validator: (value) =>
                                   value == null ? 'Field required...' : null,
@@ -257,11 +261,13 @@ class _EditProfileState extends State<EditProfile> {
                                 return DropdownMenuItem<String>(
                                   value: lisVal,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(lisVal,
                                           style: TextStyle(
-                                              color: Colors.black, fontSize: 20)),
+                                              color: Colors.black,
+                                              fontSize: 20)),
                                       Divider(),
                                     ],
                                   ),
@@ -269,7 +275,8 @@ class _EditProfileState extends State<EditProfile> {
                               }).toList(),
                               onChanged: (String val) {
                                 setState(() {
-                                  FocusScope.of(context).requestFocus(new FocusNode());
+                                  FocusScope.of(context)
+                                      .requestFocus(new FocusNode());
                                   this.gen = val;
                                 });
                               },
@@ -286,14 +293,14 @@ class _EditProfileState extends State<EditProfile> {
                               keyboardType: TextInputType.number,
                               style: TextStyle(fontSize: 20),
                               decoration: InputDecoration(
-                                prefixIcon:
-                                    (Icon(Icons.cake, color: Color(0xFFFB415B))),
+                                prefixIcon: (Icon(Icons.cake,
+                                    color: Color(0xFFFB415B))),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(20.0),
                                 ),
                                 labelText: 'Age',
-                                labelStyle:
-                                    TextStyle(color: Colors.black, fontSize: 20),
+                                labelStyle: TextStyle(
+                                    color: Colors.black, fontSize: 20),
                                 hintText: 'Between 18 and 65',
                               ),
                             ),
@@ -327,7 +334,8 @@ class _EditProfileState extends State<EditProfile> {
                                   prefixIcon: (Icon(Icons.invert_colors,
                                       color: Color(0xFFFB415B))),
                                   border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20.0))),
+                                      borderRadius:
+                                          BorderRadius.circular(20.0))),
                               isExpanded: true,
                               validator: (value) =>
                                   value == null ? 'Field required...' : null,
@@ -338,11 +346,13 @@ class _EditProfileState extends State<EditProfile> {
                                 return DropdownMenuItem<String>(
                                   value: lisVal,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(lisVal,
                                           style: TextStyle(
-                                              color: Colors.black, fontSize: 20)),
+                                              color: Colors.black,
+                                              fontSize: 20)),
                                       Divider()
                                     ],
                                   ),
@@ -350,7 +360,8 @@ class _EditProfileState extends State<EditProfile> {
                               }).toList(),
                               onChanged: (String val) {
                                 setState(() {
-                                  FocusScope.of(context).requestFocus(new FocusNode());
+                                  FocusScope.of(context)
+                                      .requestFocus(new FocusNode());
                                   this.sbg = val;
                                 });
                               },
@@ -365,7 +376,8 @@ class _EditProfileState extends State<EditProfile> {
                                   prefixIcon: (Icon(Icons.home,
                                       color: Color(0xFFFB415B))),
                                   border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20.0))),
+                                      borderRadius:
+                                          BorderRadius.circular(20.0))),
                               isExpanded: true,
                               validator: (value) =>
                                   value == null ? 'Field required...' : null,
@@ -376,11 +388,13 @@ class _EditProfileState extends State<EditProfile> {
                                 return DropdownMenuItem<String>(
                                   value: lisVal,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(lisVal,
                                           style: TextStyle(
-                                              color: Colors.black, fontSize: 20)),
+                                              color: Colors.black,
+                                              fontSize: 20)),
                                       Divider()
                                     ],
                                   ),
@@ -388,7 +402,8 @@ class _EditProfileState extends State<EditProfile> {
                               }).toList(),
                               onChanged: (String val) {
                                 setState(() {
-                                  FocusScope.of(context).requestFocus(new FocusNode());
+                                  FocusScope.of(context)
+                                      .requestFocus(new FocusNode());
                                   this.d = val;
                                   l = g.tlk[d];
                                 });
@@ -405,7 +420,8 @@ class _EditProfileState extends State<EditProfile> {
                                   prefixIcon: (Icon(Icons.home,
                                       color: Color(0xFFFB415B))),
                                   border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20.0))),
+                                      borderRadius:
+                                          BorderRadius.circular(20.0))),
                               isExpanded: true,
                               validator: (value) =>
                                   value == null ? 'Field required...' : null,
@@ -416,11 +432,13 @@ class _EditProfileState extends State<EditProfile> {
                                 return DropdownMenuItem<String>(
                                   value: lisVal,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(lisVal,
                                           style: TextStyle(
-                                              color: Colors.black, fontSize: 20)),
+                                              color: Colors.black,
+                                              fontSize: 20)),
                                       Divider()
                                     ],
                                   ),
@@ -428,7 +446,8 @@ class _EditProfileState extends State<EditProfile> {
                               }).toList(),
                               onChanged: (String val) {
                                 setState(() {
-                                  FocusScope.of(context).requestFocus(new FocusNode());
+                                  FocusScope.of(context)
+                                      .requestFocus(new FocusNode());
                                   this.tl = val;
                                   print(tl);
                                 });
@@ -506,30 +525,29 @@ class _EditProfileState extends State<EditProfile> {
                             ),
                             //last donated
                             DateTimeField(
-                                onChanged: (val){
-                                  var c="${val.year}-${val.month}-${val.day}";
-                                  curr=c;
+                                onChanged: (val) {
+                                  var c = "${val.year}-${val.month}-${val.day}";
+                                  curr = c;
                                 },
-                                  decoration: InputDecoration(
-                                      prefixIcon: (Icon(Icons.calendar_today,
-                                          color: Color(0xFFFB415B))),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(20.0),
-                                      ),
-                                      labelText: 'Last donated on $curr',
-                                      //hintText: curr,
-                                      labelStyle: TextStyle(
-                                          color: Colors.black, fontSize: 20)),
-                                  format: format,
-                                  onShowPicker: (context, currentValue) {
-                                    
-                                    return showDatePicker(
-                                        context: context,
-                                        initialDate:
-                                           currentValue??DateTime.now(),
-                                        firstDate: DateTime(2019),
-                                        lastDate: DateTime(2200));
-                                  }),
+                                decoration: InputDecoration(
+                                    prefixIcon: (Icon(Icons.calendar_today,
+                                        color: Color(0xFFFB415B))),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    ),
+                                    labelText: 'Last donated on $curr',
+                                    //hintText: curr,
+                                    labelStyle: TextStyle(
+                                        color: Colors.black, fontSize: 20)),
+                                format: format,
+                                onShowPicker: (context, currentValue) {
+                                  return showDatePicker(
+                                      context: context,
+                                      initialDate:
+                                          currentValue ?? DateTime.now(),
+                                      firstDate: DateTime(2019),
+                                      lastDate: DateTime(2200));
+                                }),
                             SizedBox(
                               height: 20,
                             ),
@@ -539,7 +557,8 @@ class _EditProfileState extends State<EditProfile> {
                                   prefixIcon: (Icon(Icons.event_available,
                                       color: Color(0xFFFB415B))),
                                   border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20.0))),
+                                      borderRadius:
+                                          BorderRadius.circular(20.0))),
                               isExpanded: true,
                               validator: (value) =>
                                   value == null ? 'Field required...' : null,
@@ -550,11 +569,13 @@ class _EditProfileState extends State<EditProfile> {
                                 return DropdownMenuItem<String>(
                                   value: lisVal,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(lisVal,
                                           style: TextStyle(
-                                              color: Colors.black, fontSize: 20)),
+                                              color: Colors.black,
+                                              fontSize: 20)),
                                       Divider()
                                     ],
                                   ),
@@ -562,13 +583,13 @@ class _EditProfileState extends State<EditProfile> {
                               }).toList(),
                               onChanged: (String val) {
                                 setState(() {
-                                  FocusScope.of(context).requestFocus(new FocusNode());
+                                  FocusScope.of(context)
+                                      .requestFocus(new FocusNode());
                                   this.st = val;
                                   if (st != status[0]) {
                                     w = callFor();
-                                    
                                   } else {
-                                    curr1='';
+                                    curr1 = '';
                                     w = SizedBox(height: 10);
                                   }
                                 });
@@ -579,13 +600,14 @@ class _EditProfileState extends State<EditProfile> {
                               height: 20,
                             ),
                             w, //if available for/unavailable for till when its valid
-  SizedBox(height:20),
+                            SizedBox(height: 20),
                             DropdownButtonFormField<String>(
                               decoration: InputDecoration(
                                   prefixIcon: (Icon(Icons.local_hospital,
                                       color: Color(0xFFFB415B))),
                                   border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20.0))),
+                                      borderRadius:
+                                          BorderRadius.circular(20.0))),
                               isExpanded: true,
                               validator: (value) =>
                                   value == null ? 'Field required...' : null,
@@ -597,20 +619,22 @@ class _EditProfileState extends State<EditProfile> {
                                 return DropdownMenuItem<String>(
                                   value: lisVal,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(lisVal,
                                           style: TextStyle(
-                                              color: Colors.black, fontSize: 20)),
+                                              color: Colors.black,
+                                              fontSize: 20)),
                                       Divider(),
                                     ],
                                   ),
                                 );
                               }).toList(),
                               onChanged: (String val) {
-
                                 setState(() {
-                                  FocusScope.of(context).requestFocus(new FocusNode());
+                                  FocusScope.of(context)
+                                      .requestFocus(new FocusNode());
                                   this.m = val;
                                 });
                               },
@@ -665,8 +689,6 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  
-
   callIt(BuildContext context) {
     setState(() {
       //checking weight and age
@@ -693,7 +715,7 @@ class _EditProfileState extends State<EditProfile> {
                               await SharedPreferences.getInstance();
                           var bd = jsonEncode({"username": username});
                           var result = await http.post(
-                              g.baseUrl + "/delete_account.php",
+                              Uri.parse(g.baseUrl + "/delete_account.php"),
                               body: bd);
                           Navigator.pop(context);
                           Navigator.pop(context);
@@ -763,16 +785,16 @@ class _EditProfileState extends State<EditProfile> {
     sp.setString("contacts", cn.text);
     sp.setString("alt_contact", acn.text);
     sp.setString("email", mail.text);
-    sp.setString("last_don",curr==null?'':curr);
+    sp.setString("last_don", curr == null ? '' : curr);
     sp.setString("status", st);
-    sp.setString("for_time", curr1==null?'':curr1);
+    sp.setString("for_time", curr1 == null ? '' : curr1);
     //print(u);
     // print(pa);
   }
 
   postData(String s, BuildContext context) async {
     setState(() {
-      edited=true;
+      edited = true;
     });
     String g = gen.toLowerCase();
     final SharedPreferences sp = await SharedPreferences.getInstance();
@@ -788,16 +810,16 @@ class _EditProfileState extends State<EditProfile> {
       "contacts": cn.text,
       "alt_contact": acn.text,
       "email": mail.text,
-      "last_don": curr==null?'':curr,
+      "last_don": curr == null ? '' : curr,
       "status": st,
-      "for_time": curr1==null?'':curr1,
+      "for_time": curr1 == null ? '' : curr1,
       "uname": uname,
     });
-    var res = await http.post(s + "/edit_profile.php", body: bd);
+    var res = await http.post(Uri.parse(s + "/edit_profile.php"), body: bd);
     print(res.statusCode);
     reg = jsonDecode(res.body);
     setState(() {
-      edited=false;
+      edited = false;
     });
     print(res.body);
     if (reg != "Contact number Already Exists..!") {
@@ -823,14 +845,14 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Widget callFor() {
-    
     return DateTimeField(
-      onChanged: (val){
-        var c="${val.year}-${val.month}-${val.day}";
-                                curr1=c;
-                              },
-        validator: (value) =>
-            value!=null?(value.isBefore(DateTime.now()) ? 'Choose a valid date' : null):null,
+        onChanged: (val) {
+          var c = "${val.year}-${val.month}-${val.day}";
+          curr1 = c;
+        },
+        validator: (value) => value != null
+            ? (value.isBefore(DateTime.now()) ? 'Choose a valid date' : null)
+            : null,
         decoration: InputDecoration(
             prefixIcon: (Icon(Icons.date_range, color: Color(0xFFFB415B))),
             border: OutlineInputBorder(
@@ -842,7 +864,7 @@ class _EditProfileState extends State<EditProfile> {
         onShowPicker: (context, currentValue) {
           return showDatePicker(
               context: context,
-              initialDate: currentValue??DateTime.now(),
+              initialDate: currentValue ?? DateTime.now(),
               firstDate: DateTime(2019),
               lastDate: DateTime(2200));
         });

@@ -165,7 +165,8 @@ class _CoordinatorLoginPageState extends State<CoordinatorLoginPage> {
         });
         var bd = json.encode({"uname": em.text, "pass": pass.text});
         print(ut.encrypt(pass.text));
-        res = await http.post(g.baseUrl + "/coordinator_login.php", body: bd);
+        res = await http.post(Uri.parse(g.baseUrl + "/coordinator_login.php"),
+            body: bd);
         print(res.statusCode);
         var reg = jsonDecode(res.body);
         print(reg);

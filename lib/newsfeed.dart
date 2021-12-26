@@ -33,10 +33,9 @@ class EmergencyGroupBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom:0.0),
+      padding: const EdgeInsets.only(bottom: 0.0),
       child: Container(
-        
-      padding: const EdgeInsets.only(bottom:145.0),
+          padding: const EdgeInsets.only(bottom: 145.0),
           margin: EdgeInsets.symmetric(vertical: 10.0),
           height: MediaQuery.of(context).size.height,
           child: lis.isEmpty && empty == false
@@ -105,62 +104,60 @@ class GroupBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom:135.0),
-          margin: EdgeInsets.only(bottom:0),
-          height: MediaQuery.of(context).size.height,
-          child: lis.isEmpty && empty == false
-              ? SpinKitHourGlass(
-                  color: Colors.red,
-                  size: 80,
-                )
-              : lis.isEmpty && empty == true
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          KoukiconsOpenFolder(
-                            height: 80,
-                            color: Colors.grey[300],
-                          ),
-                          Text(
-                            'No requests',
-                            style: TextStyle(
-                                color: Colors.grey[300], fontSize: 30),
-                          )
-                        ],
+      padding: EdgeInsets.only(bottom: 135.0),
+      margin: EdgeInsets.only(bottom: 0),
+      height: MediaQuery.of(context).size.height,
+      child: lis.isEmpty && empty == false
+          ? SpinKitHourGlass(
+              color: Colors.red,
+              size: 80,
+            )
+          : lis.isEmpty && empty == true
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      KoukiconsOpenFolder(
+                        height: 80,
+                        color: Colors.grey[300],
                       ),
-                    )
-                  : ListView.builder(
-                      controller: _scroll,
-                      itemCount: lis?.length ?? 0,
-                      itemBuilder: (context, index) {
-                        Widget w = SizedBox(width: 1);
-                        if (lis[index]['bloodgroup'] == this.group) {
-                          if (g.g_bg.isNotEmpty && dis != null) {
-                            if (lis[index]['district'] == dis &&
-                                empty == false) {
-                              w = RequestCard(
-                                i: index,
-                              );
-                            }
-                          } else if (g.g_l.isNotEmpty &&
-                              dis1 != null &&
-                              dis2 != null) {
-                            if (lis[index]['district'] == dis1 ||
-                                lis[index]['district'] == dis2) {
-                              w = RequestCard(
-                                i: index,
-                              );
-                            }
-                          } else {
-                            w = RequestCard(
-                              i: index,
-                            );
-                          }
+                      Text(
+                        'No requests',
+                        style: TextStyle(color: Colors.grey[300], fontSize: 30),
+                      )
+                    ],
+                  ),
+                )
+              : ListView.builder(
+                  controller: _scroll,
+                  itemCount: lis?.length ?? 0,
+                  itemBuilder: (context, index) {
+                    Widget w = SizedBox(width: 1);
+                    if (lis[index]['bloodgroup'] == this.group) {
+                      if (g.g_bg.isNotEmpty && dis != null) {
+                        if (lis[index]['district'] == dis && empty == false) {
+                          w = RequestCard(
+                            i: index,
+                          );
                         }
+                      } else if (g.g_l.isNotEmpty &&
+                          dis1 != null &&
+                          dis2 != null) {
+                        if (lis[index]['district'] == dis1 ||
+                            lis[index]['district'] == dis2) {
+                          w = RequestCard(
+                            i: index,
+                          );
+                        }
+                      } else {
+                        w = RequestCard(
+                          i: index,
+                        );
+                      }
+                    }
 
-                        return w;
-                      }),
+                    return w;
+                  }),
     );
   }
 }
@@ -560,7 +557,7 @@ class _NewsFeedState extends State<NewsFeed> {
       setState(() {
         ind = true;
       });
-    final res = await http.post(g.baseUrl + "/newsfeed.php",
+    final res = await http.post(Uri.parse(g.baseUrl + "/newsfeed.php"),
         body: jsonEncode({
           "pageno": page,
           "dis": dis,
@@ -595,7 +592,7 @@ class _NewsFeedState extends State<NewsFeed> {
       setState(() {
         ind = true;
       });
-    final res = await http.post(g.baseUrl + "/newsfeed.php",
+    final res = await http.post(Uri.parse(g.baseUrl + "/newsfeed.php"),
         body: jsonEncode({
           "pageno": page,
           "group": sbg,
